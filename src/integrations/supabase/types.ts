@@ -14,7 +14,261 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          evee_balance: number | null
+          full_name: string | null
+          id: string
+          kyc_verified: boolean | null
+          phone: string | null
+          riide_balance: number | null
+          role: Database["public"]["Enums"]["user_role"] | null
+          updated_at: string
+          user_id: string
+          wallet_address: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          evee_balance?: number | null
+          full_name?: string | null
+          id?: string
+          kyc_verified?: boolean | null
+          phone?: string | null
+          riide_balance?: number | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          updated_at?: string
+          user_id: string
+          wallet_address?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          evee_balance?: number | null
+          full_name?: string | null
+          id?: string
+          kyc_verified?: boolean | null
+          phone?: string | null
+          riide_balance?: number | null
+          role?: Database["public"]["Enums"]["user_role"] | null
+          updated_at?: string
+          user_id?: string
+          wallet_address?: string | null
+        }
+        Relationships: []
+      }
+      rides: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          destination_address: string | null
+          destination_latitude: number | null
+          destination_longitude: number | null
+          distance_km: number | null
+          driver_id: string | null
+          duration_minutes: number | null
+          evee_earned: number | null
+          fare_amount: number | null
+          id: string
+          payment_method: Database["public"]["Enums"]["payment_method"] | null
+          pickup_address: string | null
+          pickup_latitude: number
+          pickup_longitude: number
+          rider_id: string
+          riide_earned: number | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["ride_status"] | null
+          updated_at: string
+          vehicle_id: string | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          destination_address?: string | null
+          destination_latitude?: number | null
+          destination_longitude?: number | null
+          distance_km?: number | null
+          driver_id?: string | null
+          duration_minutes?: number | null
+          evee_earned?: number | null
+          fare_amount?: number | null
+          id?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          pickup_address?: string | null
+          pickup_latitude: number
+          pickup_longitude: number
+          rider_id: string
+          riide_earned?: number | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["ride_status"] | null
+          updated_at?: string
+          vehicle_id?: string | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          destination_address?: string | null
+          destination_latitude?: number | null
+          destination_longitude?: number | null
+          distance_km?: number | null
+          driver_id?: string | null
+          duration_minutes?: number | null
+          evee_earned?: number | null
+          fare_amount?: number | null
+          id?: string
+          payment_method?: Database["public"]["Enums"]["payment_method"] | null
+          pickup_address?: string | null
+          pickup_latitude?: number
+          pickup_longitude?: number
+          rider_id?: string
+          riide_earned?: number | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["ride_status"] | null
+          updated_at?: string
+          vehicle_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "rides_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "rides_rider_id_fkey"
+            columns: ["rider_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "rides_vehicle_id_fkey"
+            columns: ["vehicle_id"]
+            isOneToOne: false
+            referencedRelation: "vehicles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      token_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          blockchain_tx_hash: string | null
+          created_at: string
+          description: string | null
+          id: string
+          ride_id: string | null
+          token_type: string
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          blockchain_tx_hash?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          ride_id?: string | null
+          token_type: string
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          blockchain_tx_hash?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          ride_id?: string | null
+          token_type?: string
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "token_transactions_ride_id_fkey"
+            columns: ["ride_id"]
+            isOneToOne: false
+            referencedRelation: "rides"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "token_transactions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      vehicles: {
+        Row: {
+          battery_level: number | null
+          color: string | null
+          created_at: string
+          driver_id: string
+          id: string
+          is_active: boolean | null
+          latitude: number | null
+          license_plate: string
+          longitude: number | null
+          make: string
+          model: string
+          updated_at: string
+          vehicle_type: Database["public"]["Enums"]["vehicle_type"]
+          year: number | null
+        }
+        Insert: {
+          battery_level?: number | null
+          color?: string | null
+          created_at?: string
+          driver_id: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          license_plate: string
+          longitude?: number | null
+          make: string
+          model: string
+          updated_at?: string
+          vehicle_type: Database["public"]["Enums"]["vehicle_type"]
+          year?: number | null
+        }
+        Update: {
+          battery_level?: number | null
+          color?: string | null
+          created_at?: string
+          driver_id?: string
+          id?: string
+          is_active?: boolean | null
+          latitude?: number | null
+          license_plate?: string
+          longitude?: number | null
+          make?: string
+          model?: string
+          updated_at?: string
+          vehicle_type?: Database["public"]["Enums"]["vehicle_type"]
+          year?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vehicles_driver_id_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +277,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      payment_method: "riide_token" | "evee_token" | "crypto" | "fiat"
+      ride_status:
+        | "pending"
+        | "accepted"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      user_role: "rider" | "driver" | "admin"
+      vehicle_type: "car" | "bike" | "scooter" | "ev"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +412,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      payment_method: ["riide_token", "evee_token", "crypto", "fiat"],
+      ride_status: [
+        "pending",
+        "accepted",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      user_role: ["rider", "driver", "admin"],
+      vehicle_type: ["car", "bike", "scooter", "ev"],
+    },
   },
 } as const
