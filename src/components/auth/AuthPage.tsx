@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { mockApi } from "@/lib/mockData";
 import { Car, Wallet, Zap } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,14 +16,13 @@ export const AuthPage = () => {
   const [fullName, setFullName] = useState("");
   const navigate = useNavigate();
 
+  // Check if already authenticated
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    mockApi.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         navigate("/");
       }
     });
-
-    return () => subscription.unsubscribe();
   }, [navigate]);
 
   const handleSignUp = async (e: React.FormEvent) => {
@@ -31,36 +30,23 @@ export const AuthPage = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await mockApi.auth.signUp({
         email,
         password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            full_name: fullName,
-          }
-        }
       });
 
       if (error) {
-        if (error.message.includes("already registered")) {
-          toast({
-            title: "Account exists",
-            description: "This email is already registered. Please sign in instead.",
-            variant: "destructive",
-          });
-        } else {
-          toast({
-            title: "Sign up failed",
-            description: error.message,
-            variant: "destructive",
-          });
-        }
+        toast({
+          title: "Sign up failed",
+          description: error.message,
+          variant: "destructive",
+        });
       } else {
         toast({
-          title: "Check your email",
-          description: "We've sent you a confirmation link.",
+          title: "Account created!",
+          description: "Welcome to RIIDE! You can now start using the platform.",
         });
+        navigate("/");
       }
     } catch (error) {
       toast({
@@ -78,7 +64,7 @@ export const AuthPage = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await mockApi.auth.signInWithPassword({
         email,
         password,
       });
@@ -89,6 +75,12 @@ export const AuthPage = () => {
           description: error.message,
           variant: "destructive",
         });
+      } else {
+        toast({
+          title: "Welcome back!",
+          description: "You've successfully signed in.",
+        });
+        navigate("/");
       }
     } catch (error) {
       toast({

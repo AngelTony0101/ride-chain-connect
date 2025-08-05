@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Coins, TrendingUp, History, Wallet } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { mockApi } from "@/lib/mockData";
 
 interface TokenWalletProps {
   user: User;
@@ -36,9 +36,8 @@ export const TokenWallet = ({ user }: TokenWalletProps) => {
   }, [user.id]);
 
   const fetchProfile = async () => {
-    const { data, error } = await supabase
-      .from("profiles")
-      .select("riide_balance, evee_balance, wallet_address")
+    const { data, error } = await mockApi.profiles
+      .select()
       .eq("user_id", user.id)
       .single();
 
@@ -51,9 +50,8 @@ export const TokenWallet = ({ user }: TokenWalletProps) => {
   };
 
   const fetchTransactions = async () => {
-    const { data, error } = await supabase
-      .from("token_transactions")
-      .select("*")
+    const { data, error } = await mockApi.token_transactions
+      .select()
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
       .limit(10);

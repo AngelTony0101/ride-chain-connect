@@ -5,9 +5,9 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Navigation, Clock, DollarSign, Zap } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
+import { mockApi, mockVehicles } from "@/lib/mockData";
 
 interface RideBookingProps {
   user: User;
@@ -26,19 +26,12 @@ export const RideBooking = ({ user }: RideBookingProps) => {
   }, []);
 
   const fetchNearbyVehicles = async () => {
-    const { data, error } = await supabase
-      .from("vehicles")
-      .select(`
-        *,
-        profiles!vehicles_driver_id_fkey(full_name, avatar_url)
-      `)
-      .eq("is_active", true)
-      .limit(5);
-
-    if (error) {
-      console.error("Error fetching vehicles:", error);
+    const result = await mockApi.vehicles.select().eq("is_active", true).limit(5);
+    
+    if (result.error) {
+      console.error("Error fetching vehicles:", result.error);
     } else {
-      setNearbyVehicles(data || []);
+      setNearbyVehicles(result.data || []);
     }
   };
 
@@ -52,8 +45,7 @@ export const RideBooking = ({ user }: RideBookingProps) => {
       const mockDestLat = 40.7589;
       const mockDestLng = -73.9851;
 
-      const { data, error } = await supabase
-        .from("rides")
+      const { data, error } = await mockApi.rides
         .insert([
           {
             rider_id: user.id,

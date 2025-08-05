@@ -3,8 +3,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Clock, MapPin, DollarSign, Calendar, Zap } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { User } from "@supabase/supabase-js";
+import { mockApi } from "@/lib/mockData";
 
 interface RideHistoryProps {
   user: User;
@@ -26,6 +26,9 @@ interface Ride {
     make: string;
     model: string;
     license_plate: string;
+    profiles?: {
+      full_name: string;
+    };
   };
 }
 
@@ -44,14 +47,11 @@ export const RideHistory = ({ user }: RideHistoryProps) => {
   }, [user.id]);
 
   const fetchRides = async () => {
-    const { data, error } = await supabase
-      .from("rides")
-      .select(`
-        *,
-        vehicles(make, model, license_plate)
-      `)
+    const { data, error } = await mockApi.rides
+      .select()
       .eq("rider_id", user.id)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .limit(10);
 
     if (error) {
       console.error("Error fetching rides:", error);
